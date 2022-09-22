@@ -48,7 +48,7 @@ jobs:
           export SARIF_REPORT=`cat tfsec.sarif`
           echo $SARIF_REPORT | jq ' .runs[].results[] | { message: .message.text, file: "https://github.com/manish-partey/21Sept2022tfsec/blob/feature/\(.locations[].physicalLocation.artifactLocation.uri)#L\(.locations[].physicalLocation.region.startLine)-L\(.locations[].physicalLocation.region.endLine)", line: .locations[].physicalLocation.region } ' >> tfsec-result.json
 
-          SARIF_REPORT_NEW=`cat tfsec-result.json | jsonArrayToTable`          
+          SARIF_REPORT_NEW=`cat tfsec-result.json` | jsonArrayToTable
           echo "SARIF_REPORT_NEW<<EOF" >> $GITHUB_ENV
           echo "$SARIF_REPORT_NEW" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
