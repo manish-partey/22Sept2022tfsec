@@ -35,7 +35,7 @@ jobs:
           echo "$SARIF_REPORT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-          function sonArrayToTable(){
+          function jsonArrayToTable(){
           jq -r '(.[0] | ([keys[] | .] |(., map(length*"-")))), (.[] |([keys[] as $k | .[$k]])) | @tsv' column -t -s $'\t'
           }
           if [ "$(sed -n '/^{/p;q' tfsec.sarif)" ]
@@ -48,7 +48,8 @@ jobs:
           export SARIF_REPORT=`cat tfsec.sarif`
           echo $SARIF_REPORT | jq ' .runs[].results[] | { message: .message.text, file: "https://github.com/manish-partey/21Sept2022tfsec/blob/feature/\(.locations[].physicalLocation.artifactLocation.uri)#L\(.locations[].physicalLocation.region.startLine)-L\(.locations[].physicalLocation.region.endLine)", line: .locations[].physicalLocation.region } ' >> tfsec-result.json
 
-          SARIF_REPORT_NEW=`cat tfsec-result.json`
+          export SARIF_REPORT_NEW=`cat tfsec-result.json`
+          echo $SARIF_REPORT_NEW | jsonArrayToTable
           echo "SARIF_REPORT_NEW<<EOF" >> $GITHUB_ENV
           echo "$SARIF_REPORT_NEW" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
