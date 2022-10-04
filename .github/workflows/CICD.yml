@@ -1,4 +1,4 @@
-name: CI + CD
+name: CICD
 
 on:
   push:
@@ -17,8 +17,7 @@ jobs:
         run: echo Hello, world!
 
   DeployDev:
-    name: Deploy to Dev 
-    if: github.event_name == 'pull_request'
+    name: Deploy to Dev
     needs: [Build]
     runs-on: ubuntu-latest
     environment: 
@@ -29,9 +28,8 @@ jobs:
         run: echo I am deploying! 
 
   DeployStaging:
-    name: Deploy to Staging 
-    if: github.event.ref == 'refs/heads/main'
-    needs: [Build]
+    name: Deploy to Staging
+    needs: [DeployDev]
     runs-on: ubuntu-latest
     environment: 
       name: Staging
@@ -39,7 +37,7 @@ jobs:
     steps:
       - name: Deploy
         run: echo I am deploying! 
-
+        
   DeployProd:
     name: Deploy to Production 
     needs: [DeployStaging]
